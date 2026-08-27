@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Panel Electoral · Oriente Antioqueño</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root{
+    --bg: #12181c;
+    --panel: #1b2329;
+    --panel-2: #222c33;
+    --ink: #eef2f1;
+    --muted: #8fa2a6;
+    --line: #2c383f;
+    --gold: #c8a24d;
+    --clay: #b5553a;
+    --leaf: #5c8a67;
+    --accent: #4f8ea8;
+    --font-display: 'Iowan Old Style', 'Georgia', serif;
+    --font-body: -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'SFMono-Regular', Menlo, Consolas, monospace;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; padding:40px 24px 80px; }
+
+  header.hero{
+    border-bottom:1px solid var(--line);
+    padding-bottom:28px; margin-bottom:32px;
+    display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;
+  }
+  .eyebrow{
+    font-family:var(--font-mono); letter-spacing:.14em; text-transform:uppercase;
+    color:var(--gold); font-size:11px; margin-bottom:10px;
+  }
+  h1{
+    font-family:var(--font-display); font-weight:400; font-size:clamp(28px,4vw,44px);
+    margin:0; line-height:1.05;
+  }
+  h1 em{ color:var(--gold); font-style:normal; }
+  .hero-note{ color:var(--muted); font-size:13px; max-width:320px; text-align:right; line-height:1.5; }
+
+  nav.tabs{
+    display:flex; gap:6px; margin-bottom:28px; border-bottom:1px solid var(--line);
+  }
+  nav.tabs button{
+    background:none; border:none; color:var(--muted); font-family:var(--font-body);
+    font-size:14px; padding:12px 18px; cursor:pointer; border-bottom:2px solid transparent;
+    transition:.15s;
+  }
+  nav.tabs button.active{ color:var(--ink); border-bottom-color:var(--gold); }
+  nav.tabs button:hover{ color:var(--ink); }
+
+  section.view{ display:none; }
+  section.view.active{ display:block; animation:fade .25s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none} }
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:24px; margin-bottom:22px;
+  }
+  .card h2{
+    font-family:var(--font-display); font-weight:400; font-size:20px; margin:0 0 4px;
+  }
+  .card .sub{ color:var(--muted); font-size:12.5px; margin-bottom:18px; }
+
+  .stat-row{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+  .stat{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:8px;
+    padding:12px 16px; min-width:120px; flex:1;
+  }
+  .stat .n{ font-family:var(--font-mono); font-size:20px; color:var(--gold); }
+  .stat .l{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+
+  .bar-row{ display:grid; grid-template-columns:200px 1fr 90px; align-items:center; gap:12px; padding:6px 0; }
+  .bar-row .name{ font-size:13px; line-height:1.25; }
+  .bar-row .name small{ display:block; color:var(--muted); font-size:11px; }
+  .bar-track{ background:var(--panel-2); border-radius:4px; height:16px; overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:4px; }
+  .bar-row .pct{ font-family:var(--font-mono); font-size:12.5px; text-align:right; color:var(--muted); }
+  .bar-row.winner .name{ color:var(--gold); font-weight:600; }
+
+  .pending{
+    border:1px dashed var(--line); border-radius:8px; padding:16px 18px;
+    color:var(--muted); font-size:13px; line-height:1.6; background:rgba(200,162,77,.04);
+  }
+  .pending strong{ color:var(--ink); }
+
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media(max-width:820px){ .grid2{ grid-template-columns:1fr; } .bar-row{ grid-template-columns:130px 1fr 60px; } .hero-note{ text-align:left; } }
+
+  .foot-note{ color:var(--muted); font-size:11.5px; margin-top:30px; border-top:1px solid var(--line); padding-top:16px; }
+  a.src{ color:var(--accent); text-decoration:none; }
+  a.src:hover{ text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Oriente Antioqueño · Registraduría Nacional</div>
+      <h1>Marinilla <em>&</em> Rionegro<br>en votos</h1>
+    </div>
+    <div class="hero-note">Alcaldía, Concejo y últimas legislativas (Senado / Cámara), municipio por municipio.</div>
+  </header>
+
+  <nav class="tabs">
+    <button class="active" data-view="marinilla">Marinilla</button>
+    <button data-view="senado-marinilla">Senado Marinilla</button>
+    <button data-view="camara">Cámara</button>
+    <button data-view="rionegro">Rionegro</button>
+    <button data-view="senado-rionegro">Senado Rionegro</button>
+    <button data-view="legislativas">Notas</button>
+  </nav>
+
+  <!-- MARINILLA -->
+  <section class="view active" id="marinilla">
+
+    <div class="card">
+      <h2>Alcaldía de Marinilla — 29 oct. 2023</h2>
+      <div class="sub">Boletín 18 · 150/150 mesas (100%) · Fuente: La República, Registraduría Nacional</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">31.312</div><div class="l">Sufragantes (64,32%)</div></div>
+        <div class="stat"><div class="n">30.502</div><div class="l">Votos válidos</div></div>
+        <div class="stat"><div class="n">874</div><div class="l">Votos en blanco</div></div>
+        <div class="stat"><div class="n">423</div><div class="l">Votos nulos</div></div>
+      </div>
+      <div id="marinilla-alcaldia"></div>
+    </div>
+
+    <div class="card">
+      <h2>Concejo de Marinilla — por partido</h2>
+      <div class="sub">14 curules en disputa · 29.188 votos válidos a listas (incluye 1.949 votos en blanco) · Fuente: La República</div>
+      <div id="marinilla-concejo"></div>
+    </div>
+
+  </section>
+
+  <!-- SENADO MARINILLA 2026 -->
+  <section class="view" id="senado-marinilla">
+
+    <div class="card">
+      <h2>Senado — Marinilla (Antioquia), marzo 2026</h2>
+      <div class="sub">Boletín municipal 23 · 159/159 mesas (100%) · Fuente: colombia.com / Registraduría Nacional</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">27.824</div><div class="l">Sufragantes (53,75%)</div></div>
+        <div class="stat"><div class="n">26.311</div><div class="l">Votos válidos</div></div>
+        <div class="stat"><div class="n">982</div><div class="l">Votos en blanco</div></div>
+        <div class="stat"><div class="n">674</div><div class="l">Votos nulos</div></div>
+      </div>
+      <div id="senado-marinilla-partidos"></div>
+    </div>
+
+    <div class="card">
+      <h2>Candidato más votado por lista, Marinilla</h2>
+      <div class="sub">Voto preferente dentro de cada partido — solo los partidos con desglose disponible</div>
+      <div id="senado-marinilla-candidatos"></div>
+      <div class="pending" style="margin-top:14px;">
+        <strong>Pacto Histórico</strong> (13,61%, 3.581 votos) tampoco trae aquí enlace de despliegue por candidato,
+        igual que en Rionegro. En Marinilla, Centro Democrático tiene el mismo problema: 37,35% de la votación
+        (9.828 votos) sin desglose nominal disponible en esta página.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- CAMARA -->
+  <section class="view" id="camara">
+
+    <div class="card">
+      <h2>Cámara de Representantes — Marinilla, marzo 2026</h2>
+      <div class="sub">Boletín municipal 20 · 159/159 mesas (100%) · Circunscripción territorial Antioquia · Fuente: colombia.com</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">27.692</div><div class="l">Sufragantes (53,50%)</div></div>
+        <div class="stat"><div class="n">26.118</div><div class="l">Votos válidos</div></div>
+        <div class="stat"><div class="n">1.053</div><div class="l">Votos en blanco</div></div>
+        <div class="stat"><div class="n">871</div><div class="l">Votos nulos</div></div>
+      </div>
+      <div id="camara-marinilla"></div>
+    </div>
+
+    <div class="card">
+      <h2>Cámara de Representantes — Antioquia (departamental)</h2>
+      <div class="sub">Boletín 58 · 16.350/16.388 mesas (99,76%) · Contexto de referencia para comparar con el municipio</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">2.463.740</div><div class="l">Sufragantes (45,58%)</div></div>
+        <div class="stat"><div class="n">2.288.770</div><div class="l">Votos válidos</div></div>
+        <div class="stat"><div class="n">98.840</div><div class="l">Votos en blanco</div></div>
+        <div class="stat"><div class="n">76.186</div><div class="l">Votos nulos</div></div>
+      </div>
+      <div id="camara-antioquia"></div>
+    </div>
+
+    <div class="card">
+      <h2>Cámara — nombres por candidato</h2>
+      <div class="pending">
+        Intenté sacar el detalle por candidato de Cámara (partido ganador, Centro Democrático, en ambos municipios)
+        pero el sitio volvió a fallar: al pedir el desglose de Marinilla me devolvió otra vez los datos de Rionegro,
+        el mismo problema de caché que ya vimos antes con otras páginas de colombia.com. Por ahora dejo Cámara solo
+        a nivel de partido (arriba). Si me pasas tú las URLs exactas con el parámetro <code>P=</code> de cada
+        partido (aparecen en el boletín cuando hay "Voto preferente"), las proceso directo.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Cámara — Rionegro, marzo 2026</h2>
+      <div class="sub">Boletín municipal 30 · 387/390 mesas (99,23%) · Circunscripción territorial Antioquia · Fuente: colombia.com</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">74.558</div><div class="l">Sufragantes (57,80%)</div></div>
+        <div class="stat"><div class="n">70.488</div><div class="l">Votos válidos</div></div>
+        <div class="stat"><div class="n">3.130</div><div class="l">Votos en blanco</div></div>
+        <div class="stat"><div class="n">2.003</div><div class="l">Votos nulos</div></div>
+      </div>
+      <div id="camara-rionegro"></div>
+    </div>
+
+  </section>
+
+  <!-- RIONEGRO -->
+  <section class="view" id="rionegro">
+
+    <div class="card">
+      <h2>Alcaldía de Rionegro — 29 oct. 2023</h2>
+      <div class="sub">Boletín 25 · 370/370 mesas (100%) · Fuente: La República, Registraduría Nacional</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">83.354</div><div class="l">Sufragantes (68,72%)</div></div>
+        <div class="stat"><div class="n">81.292</div><div class="l">Votos válidos</div></div>
+        <div class="stat"><div class="n">2.962</div><div class="l">Votos en blanco</div></div>
+        <div class="stat"><div class="n">1.037</div><div class="l">Votos nulos</div></div>
+      </div>
+      <div id="rionegro-alcaldia-2023"></div>
+    </div>
+
+    <div class="card">
+      <h2>Alcaldía de Rionegro — 27 oct. 2019 (referencia histórica)</h2>
+      <div class="sub">Boletín 96 · 305/305 mesas (100%) · Fuente: colombia.com / Registraduría Nacional</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">75.014</div><div class="l">Sufragantes (69,38%)</div></div>
+        <div class="stat"><div class="n">72.027</div><div class="l">Votos válidos</div></div>
+        <div class="stat"><div class="n">4.464</div><div class="l">Votos en blanco</div></div>
+        <div class="stat"><div class="n">1.678</div><div class="l">Votos nulos</div></div>
+      </div>
+      <div id="rionegro-alcaldia-2019"></div>
+    </div>
+
+    <div class="card">
+      <h2>Concejo de Rionegro — por partido</h2>
+      <div class="sub">Boletín 26 · 366/370 mesas (98,91%) · 77.474 votos válidos (incluye 4.570 en blanco) · Fuente: La República</div>
+      <div id="rionegro-concejo"></div>
+    </div>
+
+  </section>
+
+  <!-- SENADO RIONEGRO 2026 -->
+  <section class="view" id="senado-rionegro">
+
+    <div class="card">
+      <h2>Senado — Rionegro (Antioquia), marzo 2026</h2>
+      <div class="sub">Boletín municipal 30 · 390/390 mesas (100%) · Fuente: colombia.com / Registraduría Nacional</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n">75.591</div><div class="l">Sufragantes (58,60%)</div></div>
+        <div class="stat"><div class="n">71.611</div><div class="l">Votos válidos</div></div>
+        <div class="stat"><div class="n">2.752</div><div class="l">Votos en blanco</div></div>
+        <div class="stat"><div class="n">1.724</div><div class="l">Votos nulos</div></div>
+      </div>
+      <div id="senado-rionegro-partidos"></div>
+    </div>
+
+    <div class="card">
+      <h2>Candidato más votado por lista, Rionegro</h2>
+      <div class="sub">Voto preferente dentro de cada partido — solo se muestran los partidos cuyo listado de candidatos pude extraer</div>
+      <div id="senado-rionegro-candidatos"></div>
+      <div class="pending" style="margin-top:14px;">
+        <strong>Centro Democrático</strong> (46,26%, 33.132 votos) y <strong>Pacto Histórico</strong> (12,85%, 9.207 votos) —
+        los dos partidos más votados en Rionegro — no traen enlace de despliegue por candidato en esta página de
+        colombia.com, a diferencia del resto. Solo tengo el total de lista para ambos; si me pasas la fuente con el
+        detalle nominal (Registraduría o boletín de prensa), lo agrego.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- LEGISLATIVAS -->
+  <section class="view" id="legislativas">
+    <div class="card">
+      <h2>Senado y Cámara — últimas legislativas (marzo 2026)</h2>
+      <div class="sub">Elecciones al Congreso, en simultáneo con la primera vuelta presidencial</div>
+      <div class="pending">
+        Las legislativas de marzo de 2026 tuvieron un escrutinio departamental de Antioquia especialmente disputado
+        (el CNE llegó a suspender la declaratoria oficial de curules mientras resolvía varias reclamaciones sobre la
+        Comisión Escrutadora Departamental). No encontré todavía —con la certeza que exijo para poner una cifra en
+        un panel— el desglose de votación por partido a nivel de Antioquia, ni el corte específico para las mesas de
+        Marinilla y Rionegro, que es lo más difícil de conseguir públicamente para Senado (es votación por
+        circunscripción nacional) y algo más accesible para Cámara (circunscripción por departamento).
+        <br><br>
+        Si quieres, puedo: (1) buscar puntualmente el resultado departamental de Antioquia para Cámara y Senado una
+        vez resuelto el escrutinio, o (2) si tienes acceso a los E-26/E-24 de esas mesas, los proceso directamente.
+      </div>
+    </div>
+  </section>
+
+  <div class="foot-note">
+    Fuentes citadas dentro de cada tarjeta. Cifras oficiales preliminares de boletín, no acta final de escrutinio.
+    Este panel se puede ampliar en cuanto tengamos el resto de las fuentes.
+  </div>
+
+</div>
+
+<script>
+const palette = ['#c8a24d','#b5553a','#5c8a67','#4f8ea8','#8a6fae','#c47f3a','#7a9e9f','#9a7a5c','#6f8a4f','#a85c7a','#5c7aa8','#a89a3a','#7a5c8a','#8a5c5c','#5c8a8a','#8a8a5c','#5c6f8a','#8a5c7a'];
+
+function renderBars(containerId, data, opts={}){
+  const el = document.getElementById(containerId);
+  const max = Math.max(...data.map(d=>d.votes));
+  el.innerHTML = data.map((d,i)=>{
+    const w = (d.votes/max*100).toFixed(1);
+    const color = d.color || palette[i % palette.length];
+    return `<div class="bar-row ${d.winner?'winner':''}">
+      <div class="name">${d.name}${d.sub?`<small>${d.sub}</small>`:''}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${color}"></div></div>
+      <div class="pct">${d.votes.toLocaleString('es-CO')} · ${d.pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPartyCandidates(containerId, parties){
+  const el = document.getElementById(containerId);
+  const maxParty = Math.max(...parties.map(p=>p.votes));
+  el.innerHTML = parties.map((p,i)=>{
+    const color = palette[i % palette.length];
+    const w = (p.votes/maxParty*100).toFixed(1);
+    const maxCand = p.candidates && p.candidates.length ? Math.max(...p.candidates.map(c=>c.votes)) : 1;
+    return `<div style="margin-bottom:16px;">
+      <div class="bar-row">
+        <div class="name" style="font-weight:600;">${p.name}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${color}"></div></div>
+        <div class="pct">${p.votes.toLocaleString('es-CO')} · ${p.pct}%</div>
+      </div>
+      ${p.candidates ? `<div style="margin:4px 0 0 0px;padding-left:12px;border-left:2px solid ${color}44;">` +
+        p.candidates.map(c=>{
+          const cw = (c.votes/maxCand*100).toFixed(1);
+          return `<div class="bar-row" style="grid-template-columns:180px 1fr 70px;padding:3px 0;">
+            <div class="name" style="font-size:12px;color:var(--muted);">${c.name}</div>
+            <div class="bar-track" style="height:10px;"><div class="bar-fill" style="width:${cw}%;background:${color}aa;"></div></div>
+            <div class="pct" style="font-size:11px;">${c.votes.toLocaleString('es-CO')}</div>
+          </div>`;
+        }).join('') + `</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+renderBars('marinilla-alcaldia', [
+  {name:'Julio César Serna Gómez', sub:'Partido Conservador Colombiano', votes:11854, pct:'38.86', winner:true},
+  {name:'José Manuel González Botero', sub:'Motivos Para Crecer', votes:7275, pct:'23.85'},
+  {name:'Edgar Augusto Villegas Ramírez', sub:'Partido Liberal Colombiano', votes:5351, pct:'17.54'},
+  {name:'Cristian Mauricio Gómez Gómez', sub:'Hagamos Grande a Marinilla', votes:1792, pct:'5.87'},
+  {name:'John Edisson Ramírez Giraldo', sub:'Pacto Histórico', votes:1179, pct:'3.86'},
+  {name:'Juan de Dios Orozco Gallo', sub:'Movimiento Salvación Nacional', votes:807, pct:'2.64'},
+  {name:'Omar Ignacio Castaño Giraldo', sub:'Marinilla con Futuro', votes:668, pct:'2.19'},
+  {name:'Elkyn Darío Hincapié Ramírez', sub:'Cambio Radical', votes:371, pct:'1.21'},
+  {name:'Guillermo León Castrillón Gómez', sub:'Alianza Democrática Amplia', votes:257, pct:'0.84'},
+  {name:'Darwin Augusto Gómez Moya', sub:'La Fuerza de la Paz', votes:74, pct:'0.24'},
+]);
+
+renderPartyCandidates('marinilla-concejo', [
+  {name:'Partido Liberal Colombiano', votes:2848, pct:'9.76', candidates:[
+    {name:'Miguel Ángel Bedoya Bedoya', votes:631},
+    {name:'Diego Edison Galvis García', votes:367},
+    {name:'Juan David Martínez Ramírez', votes:319},
+    {name:'Yuliana Andrea Cuartas Gallego', votes:263},
+  ]},
+  {name:'Partido Conservador Colombiano', votes:2652, pct:'9.09', candidates:[
+    {name:'María Victoria Ramírez Duque', votes:770},
+    {name:'Odair Arias Gómez', votes:565},
+    {name:'Deisy Aleida Vásquez Marín', votes:450},
+  ]},
+  {name:'Partido de la U', votes:2453, pct:'8.40', candidates:[
+    {name:'Héctor Emilio Gómez Buitrago', votes:663},
+    {name:'Verónica Muñetón Galvis', votes:505},
+    {name:'Luz Mery Vergara Atehortúa', votes:449},
+  ]},
+  {name:'Creemos', votes:2266, pct:'7.76', candidates:[
+    {name:'Luz Maribel Giraldo', votes:628},
+    {name:'Hernando Alonso Salazar Vargas', votes:468},
+    {name:'Robinson Ferney Gómez Zuluaga', votes:431},
+  ]},
+  {name:'Centro Democrático', votes:2032, pct:'6.96', candidates:[
+    {name:'Sergio Mauricio Martínez Pérez', votes:526},
+    {name:'Sara Baena Montoya', votes:243},
+    {name:'Michael Osorno Ochoa', votes:173},
+  ]},
+  {name:'Avancemos Marinilla', votes:2006, pct:'6.87', candidates:[
+    {name:'Rubén Darío Vásquez Vallejo', votes:364},
+    {name:'Jaime Fernando Zapata López', votes:359},
+    {name:'Guillermo León Hurtado Gallo', votes:303},
+  ]},
+  {name:'Nueva Fuerza Democrática', votes:1910, pct:'6.54', candidates:[
+    {name:'Gustavo Alberto Gómez Hoyos', votes:483},
+    {name:'Omar Adolfo Giraldo Galvis', votes:317},
+    {name:'José Alejandro Ramírez Villegas', votes:268},
+  ]},
+  {name:'Alianza Verde', votes:1835, pct:'6.29', candidates:[
+    {name:'Alexander Serna Ramírez', votes:429},
+    {name:'Juan Andrés González Elejalde', votes:257},
+    {name:'Walter Alejandro Ríos Arias', votes:155},
+  ]},
+  {name:'ASI', votes:1805, pct:'6.18', candidates:[
+    {name:'Juan Felipe Urrea Ramírez', votes:543},
+    {name:'John Mario Vanegas Aristizábal', votes:529},
+    {name:'Rubén Darío Orozco Gómez', votes:308},
+  ]},
+  {name:'En Marcha', votes:1723, pct:'5.90', candidates:[
+    {name:'Rigoberto Cortés Castro', votes:574},
+    {name:'Andrés Felipe Soto Castaño', votes:295},
+    {name:'Leonardo de Jesús Giraldo Aristizábal', votes:201},
+  ]},
+  {name:'Cambio Radical', votes:1268, pct:'4.34', candidates:[
+    {name:'Juan Felipe Duque Quintero', votes:708},
+    {name:'Juan Javier Gómez Gallego', votes:255},
+  ]},
+  {name:'MAIS', votes:1228, pct:'4.21', candidates:[
+    {name:'Danilo Albeiro Zuluaga Carvajal', votes:251},
+    {name:'María Liliam Quintero Cardona', votes:148},
+    {name:'Jorge Humberto Arias García', votes:132},
+  ]},
+  {name:'Pacto Histórico', votes:1219, pct:'4.18', candidates:[
+    {name:'Solo por la lista (votos a lista cerrada)', votes:1219},
+  ]},
+  {name:'Marinilla con Futuro', votes:800, pct:'2.74', candidates:[
+    {name:'Jhon Deybi Arbeláez Gómez', votes:311},
+    {name:'Julián de Jesús Gallo Cardona', votes:112},
+  ]},
+  {name:'AICO', votes:696, pct:'2.38', candidates:[
+    {name:'Manuel Tiberio Giraldo Cardona', votes:499},
+    {name:'Oswaldo Alberto Tamayo Gallego', votes:35},
+  ]},
+  {name:'Movimiento Salvación Nacional', votes:349, pct:'1.20', candidates:[
+    {name:'Dora Estela Giraldo Jiménez', votes:104},
+    {name:'Alexandra Jaramillo Calle', votes:75},
+  ]},
+  {name:'Alianza Democrática Amplia', votes:105, pct:'0.36', candidates:[
+    {name:'Manuela Rúa Giraldo', votes:27},
+    {name:'Adriana Patricia Marín Castrillón', votes:23},
+  ]},
+  {name:'Dignidad & Compromiso', votes:44, pct:'0.15', candidates:[
+    {name:'Juan Carlos Ríos Giraldo', votes:21},
+    {name:'Ketty Marcela González Romero', votes:8},
+  ]},
+]);
+
+renderPartyCandidates('rionegro-concejo', [
+  {name:'Partido Centro Democrático', votes:11465, pct:'14.80', candidates:[
+    {name:'Lina Marcela Ciro Martínez', votes:2402},
+    {name:'Oscar Johao García-Casarrubio Parra', votes:1657},
+    {name:'Adrián Alexander Castro Alzate', votes:1568},
+    {name:'Ramón Humberto Cendoya Gaviria', votes:1567},
+  ]},
+  {name:'Primero la Gente', votes:11239, pct:'14.51', candidates:[
+    {name:'Andrés Santiago García Grisales', votes:1997},
+    {name:'Juan David Torres Baena', votes:1855},
+    {name:'Víctor Hugo Ayala Osorio', votes:1052},
+    {name:'William Stived Marulanda Alzate', votes:886},
+  ]},
+  {name:'Partido Político Creemos', votes:7490, pct:'9.67', candidates:[
+    {name:'Víctor Alfonso Barreto Rodríguez', votes:2004},
+    {name:'Jorge Alexander Ospina Ospina', votes:1511},
+    {name:'Carlos Andrés Zuluaga Sepúlveda', votes:1402},
+  ]},
+  {name:'Partido Alianza Verde', votes:6800, pct:'8.78', candidates:[
+    {name:'Cristian Norbey Ospina Garzón', votes:1206},
+    {name:'Gustavo Andrés Botero Arbeláez', votes:1185},
+    {name:'Ronald Mauricio López Ramírez', votes:1088},
+  ]},
+  {name:'Coalición Juntos Rionegro', votes:6165, pct:'7.96', candidates:[
+    {name:'Juan David Ruiz Virgües', votes:1529},
+    {name:'Miguel Alexander Valencia Ramírez', votes:1359},
+    {name:'Wbaldo de Jesús Castro Franco', votes:635},
+  ]},
+  {name:'Partido de la U', votes:5223, pct:'6.74', candidates:[
+    {name:'Carlos Mauricio Ríos Franco', votes:1096},
+    {name:'Claudia Natalia Moreno Vásquez', votes:712},
+    {name:'Jeisson Stibel Ramírez Morales', votes:544},
+  ]},
+  {name:'Movimiento Salvación Nacional', votes:5113, pct:'6.60', candidates:[
+    {name:'Juan Esteban Velásquez García', votes:1188},
+    {name:'Bibiana Marcela Zuluaga Otálvaro', votes:1126},
+    {name:'Nicolás Alberto Yepes Torres', votes:926},
+  ]},
+  {name:'Partido Nuevo Liberalismo', votes:4597, pct:'5.93', candidates:[
+    {name:'Simón David García Díaz', votes:965},
+    {name:'Julián Garzón Ortega', votes:800},
+    {name:'Mario Augusto Agudelo Hincapié', votes:557},
+  ]},
+  {name:'ASI', votes:4495, pct:'5.80', candidates:[
+    {name:'Elkin Mauricio Zapata Carvajal', votes:1585},
+    {name:'César Augusto Sepúlveda Gallego', votes:990},
+    {name:'María José Carmona Castillo', votes:508},
+  ]},
+  {name:'AICO', votes:3851, pct:'4.97', candidates:[
+    {name:'Jeider Serna Sánchez', votes:1749},
+    {name:'Jhonatan Valencia Gómez', votes:1500},
+  ]},
+  {name:'Partido Conservador Colombiano', votes:3208, pct:'4.14', candidates:[
+    {name:'Omar Efrén Monroy Palacio', votes:1041},
+    {name:'Yony Alexander Yepes Ortega', votes:956},
+    {name:'Jorge Humberto Restrepo Zuluaga', votes:601},
+  ]},
+  {name:'Alianza Democrática Amplia', votes:1156, pct:'1.49', candidates:[
+    {name:'Cristian Alejandro Zapata Franco', votes:399},
+    {name:'Daniel Steven Marín Tabares', votes:387},
+  ]},
+  {name:'Pacto Histórico', votes:1132, pct:'1.46', candidates:[
+    {name:'Solo por la lista (votos a lista cerrada)', votes:1132},
+  ]},
+  {name:'Nueva Fuerza Democrática', votes:524, pct:'0.68', candidates:[
+    {name:'Eduin Fernando Cardona Murillo', votes:151},
+    {name:'Rubén Darío Pérez Giraldo', votes:69},
+  ]},
+  {name:'Agrupación Política En Marcha', votes:286, pct:'0.37', candidates:[
+    {name:'Solo por la lista (votos a lista cerrada)', votes:286},
+  ]},
+  {name:'La Fuerza de la Paz', votes:92, pct:'0.12', candidates:[
+    {name:'Solo por la lista (votos a lista cerrada)', votes:92},
+  ]},
+  {name:'Dignidad & Compromiso', votes:68, pct:'0.09', candidates:[
+    {name:'Solo por la lista (votos a lista cerrada)', votes:68},
+  ]},
+]);
+
+renderBars('rionegro-alcaldia-2023', [
+  {name:'Jorge Humberto Rivas Urrea', sub:'Rionegro Nos Une', votes:41092, pct:'50.54', winner:true},
+  {name:'Fernando Andrés Valencia Vallejo', sub:'Tola Primero la Gente', votes:30775, pct:'37.85'},
+  {name:'Mauricio de Jesús Rendón González', sub:'Movimiento Alianza Democrática Amplia', votes:4507, pct:'5.54'},
+  {name:'Ricardo Nieto Rizo', sub:'Agrupación Política En Marcha', votes:1021, pct:'1.25'},
+  {name:'Luis Ernesto Castaño Castaño', sub:'Partido Ecologista Colombiano', votes:659, pct:'0.81'},
+  {name:'Juan Carlos Vargas Arbeláez', sub:'Partido Verde Oxígeno', votes:276, pct:'0.33'},
+]);
+
+renderBars('rionegro-alcaldia-2019', [
+  {name:'Rodrigo Hernández Alzate', sub:'Coalición Unidos por Rionegro', votes:25745, pct:'35.74', winner:true},
+  {name:'Fernando Andrés Valencia Vallejo', sub:'Coalición Rionegro Primero la Gente', votes:24326, pct:'33.77'},
+  {name:'Mauricio de Jesús Rendón González', sub:'Partido de Reivindicación Étnica', votes:8156, pct:'11.32'},
+  {name:'Laura Emilse Marulanda Tobón', sub:'G.S.C. Rionegro te Llevo en el Corazón', votes:4043, pct:'5.61'},
+  {name:'Carlos Mauricio Martínez Flórez', sub:'Coalición Más Oportunidades', votes:3831, pct:'5.31'},
+  {name:'Hernán de Jesús Ospina Sepúlveda', sub:'Partido Liberal Colombiano', votes:818, pct:'1.13'},
+  {name:'Carlos Ignacio Osorno Uribe', sub:'Polo Democrático Alternativo', votes:644, pct:'0.89'},
+]);
+
+renderBars('camara-rionegro', [
+  {name:'Partido Centro Democrático', votes:30400, pct:'43.12', winner:true},
+  {name:'Pacto Histórico Antioquia', votes:9451, pct:'13.40'},
+  {name:'Creemos', votes:9433, pct:'13.38'},
+  {name:'CR-LAU-MSN-OXI', votes:5544, pct:'7.86'},
+  {name:'Partido Conservador Colombiano', votes:4279, pct:'6.07'},
+  {name:'Ahora Colombia', votes:3637, pct:'5.15'},
+  {name:'Partido Liberal Colombiano', votes:2179, pct:'3.09'},
+  {name:'Coalición Alianza Verde, En Marcha, ASI', votes:1402, pct:'1.98'},
+  {name:'ALMA', votes:597, pct:'0.84'},
+  {name:'Frente Amplio Unitario', votes:247, pct:'0.35'},
+  {name:'Coalición Fuerza Ciudadana', votes:189, pct:'0.26'},
+]);
+
+renderBars('camara-marinilla', [
+  {name:'Partido Centro Democrático', votes:9344, pct:'35.77', winner:true},
+  {name:'Partido Conservador Colombiano', votes:4157, pct:'15.91'},
+  {name:'Pacto Histórico Antioquia', votes:3443, pct:'13.18'},
+  {name:'Creemos', votes:3036, pct:'11.62'},
+  {name:'Coalición Alianza Verde, En Marcha, ASI', votes:1438, pct:'5.50'},
+  {name:'CR-LAU-MSN-OXI', votes:1171, pct:'4.48'},
+  {name:'Partido Liberal Colombiano', votes:951, pct:'3.64'},
+  {name:'Ahora Colombia', votes:909, pct:'3.48'},
+  {name:'ALMA', votes:329, pct:'1.25'},
+  {name:'Coalición Fuerza Ciudadana', votes:151, pct:'0.57'},
+  {name:'Frente Amplio Unitario', votes:136, pct:'0.52'},
+]);
+
+renderBars('camara-antioquia', [
+  {name:'Partido Centro Democrático', votes:742902, pct:'32.45', winner:true},
+  {name:'Pacto Histórico Antioquia', votes:394081, pct:'17.21'},
+  {name:'Creemos', votes:285354, pct:'12.46'},
+  {name:'Partido Liberal Colombiano', votes:223870, pct:'9.78'},
+  {name:'Partido Conservador Colombiano', votes:203995, pct:'8.91'},
+  {name:'CR-LAU-MSN-OXI', votes:119070, pct:'5.20'},
+  {name:'Ahora Colombia', votes:100835, pct:'4.40'},
+  {name:'Coalición Alianza Verde, En Marcha, ASI', votes:80097, pct:'3.49'},
+  {name:'ALMA', votes:18815, pct:'0.82'},
+  {name:'Frente Amplio Unitario', votes:13808, pct:'0.60'},
+  {name:'Coalición Fuerza Ciudadana', votes:7103, pct:'0.31'},
+]);
+
+renderBars('senado-marinilla-partidos', [
+  {name:'Partido Centro Democrático', votes:9828, pct:'37.35', winner:true},
+  {name:'Partido Conservador Colombiano', votes:3725, pct:'14.15'},
+  {name:'Pacto Histórico Senado', votes:3581, pct:'13.61'},
+  {name:'Creemos', votes:1965, pct:'7.46'},
+  {name:'Alianza por Colombia', votes:1727, pct:'6.56'},
+  {name:'Partido Liberal Colombiano', votes:1284, pct:'4.88'},
+  {name:'Coalición Cambio Radical - ALMA', votes:827, pct:'3.14'},
+  {name:'Ahora Colombia', votes:736, pct:'2.79'},
+  {name:'Partido de la U', votes:633, pct:'2.40'},
+  {name:'Movimiento Salvación Nacional', votes:557, pct:'2.11'},
+  {name:'Frente Amplio Unitario', votes:198, pct:'0.75'},
+  {name:'Coalición Fuerza Ciudadana', votes:130, pct:'0.49'},
+  {name:'La Lista de Oviedo', votes:86, pct:'0.32'},
+  {name:'Partido Político Oxígeno', votes:25, pct:'0.09'},
+  {name:'Patriotas', votes:17, pct:'0.06'},
+  {name:'Colombia Segura y Próspera', votes:10, pct:'0.03'},
+]);
+
+const senadoCandidatosMarinilla = [
+  {partido:'Partido Conservador Colombiano', color:palette[1], top:[
+    {name:'Johnnatan Alexis Tamayo Usuga', votes:1593},
+    {name:'Juan Diego Gómez Jiménez', votes:586},
+    {name:'Oscar Mauricio Giraldo Hernández', votes:392},
+  ]},
+  {partido:'Creemos', color:palette[2], top:[
+    {name:'Juliana Gutiérrez Zuluaga', votes:1332},
+    {name:'Andrés Felipe Bedoya Rendón', votes:122},
+    {name:'Wilder Zapata Torres', votes:37},
+  ]},
+];
+document.getElementById('senado-marinilla-candidatos').innerHTML = senadoCandidatosMarinilla.map(p=>{
+  const max = Math.max(...p.top.map(c=>c.votes));
+  return `<div style="margin-bottom:18px;">
+    <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:${p.color};margin-bottom:6px;">${p.partido}</div>
+    ${p.top.map(c=>{
+      const w=(c.votes/max*100).toFixed(1);
+      return `<div class="bar-row"><div class="name">${c.name}</div><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${p.color}"></div></div><div class="pct">${c.votes.toLocaleString('es-CO')}</div></div>`;
+    }).join('')}
+  </div>`;
+}).join('');
+
+renderBars('senado-rionegro-partidos', [
+  {name:'Partido Centro Democrático', votes:33132, pct:'46.26', winner:true},
+  {name:'Pacto Histórico Senado', votes:9207, pct:'12.85'},
+  {name:'Creemos', votes:7235, pct:'10.10'},
+  {name:'Partido Conservador Colombiano', votes:4396, pct:'6.13'},
+  {name:'Alianza por Colombia', votes:3472, pct:'4.84'},
+  {name:'Partido Liberal Colombiano', votes:2587, pct:'3.61'},
+  {name:'Movimiento Salvación Nacional', votes:2552, pct:'3.56'},
+  {name:'Ahora Colombia', votes:2233, pct:'3.11'},
+  {name:'Coalición Cambio Radical - ALMA', votes:1760, pct:'2.45'},
+  {name:'Partido de la U', votes:1264, pct:'1.76'},
+  {name:'Frente Amplio Unitario', votes:497, pct:'0.69'},
+  {name:'La Lista de Oviedo', votes:252, pct:'0.35'},
+  {name:'Coalición Fuerza Ciudadana', votes:143, pct:'0.19'},
+  {name:'Partido Político Oxígeno', votes:59, pct:'0.08'},
+  {name:'Colombia Segura y Próspera', votes:40, pct:'0.05'},
+  {name:'Patriotas', votes:30, pct:'0.04'},
+]);
+
+const senadoCandidatos = [
+  {partido:'Creemos', color:palette[2], top:[
+    {name:'Juliana Gutiérrez Zuluaga', votes:3905},
+    {name:'Andrés Felipe Bedoya Rendón', votes:2027},
+    {name:'Wilder Zapata Torres', votes:132},
+  ]},
+  {partido:'Partido Conservador Colombiano', color:palette[1], top:[
+    {name:'Germán Alcides Blanco Álvarez', votes:1196},
+    {name:'Johnnatan Alexis Tamayo Usuga', votes:950},
+    {name:'Oscar Mauricio Giraldo Hernández', votes:572},
+  ]},
+  {partido:'Partido Liberal Colombiano', color:palette[3], top:[
+    {name:'María Eugenia Lopera Monsalve', votes:799},
+    {name:'Santiago Montoya Montoya', votes:526},
+    {name:'Gersson Vargas Valdeleón', votes:459},
+  ]},
+  {partido:'Alianza por Colombia', color:palette[4], top:[
+    {name:'Luis Carlos Rúa Sánchez', votes:991},
+    {name:'Jonathan Ferney Pulido Hernández', votes:541},
+    {name:'Andrea Padilla Villarraga', votes:459},
+  ]},
+];
+document.getElementById('senado-rionegro-candidatos').innerHTML = senadoCandidatos.map(p=>{
+  const max = Math.max(...p.top.map(c=>c.votes));
+  return `<div style="margin-bottom:18px;">
+    <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:${p.color};margin-bottom:6px;">${p.partido}</div>
+    ${p.top.map(c=>{
+      const w=(c.votes/max*100).toFixed(1);
+      return `<div class="bar-row"><div class="name">${c.name}</div><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${p.color}"></div></div><div class="pct">${c.votes.toLocaleString('es-CO')}</div></div>`;
+    }).join('')}
+  </div>`;
+}).join('');
+
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('section.view').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.view).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
